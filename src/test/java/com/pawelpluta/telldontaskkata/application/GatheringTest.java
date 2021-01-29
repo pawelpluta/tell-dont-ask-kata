@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import com.pawelpluta.telldontaskkata.domain.Plant;
 import com.pawelpluta.telldontaskkata.domain.RaisedBed;
+import com.pawelpluta.telldontaskkata.domain.RaisedBedId;
 import com.pawelpluta.telldontaskkata.repository.InMemoryCrateRepository;
 import com.pawelpluta.telldontaskkata.repository.InMemoryRaisedBedRepository;
 import com.pawelpluta.telldontaskkata.repository.RaisedBedRepository;
@@ -15,8 +16,6 @@ import static com.pawelpluta.telldontaskkata.domain.RaisedBedFixture.someRaisedB
 import static com.pawelpluta.telldontaskkata.domain.RaisedBedFixture.someRaisedBedWithMultiplePlantsReadyForGathering;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GatheringTest {
@@ -36,14 +35,14 @@ class GatheringTest {
     void gatheredPlantsShouldNotBeAvailableForGatheringAgain() {
         // given
         Integer initialWateringCount = 10;
-        Integer raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithWateringCountOf(initialWateringCount)));
+        RaisedBedId raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithWateringCountOf(initialWateringCount)));
         GatheringCommand command = gatherPlantsCommandWithBed(raisedBedId);
 
         // when
         gathering.gather(command);
 
         // then
-        Plant gatheredPlant = raisedBedRepository.findById(raisedBedId).get().getPlants().get(0);
+        Plant gatheredPlant = raisedBedRepository.findById(raisedBedId.value()).get().getPlants().get(0);
         assertEquals(0, gatheredPlant.getWateringCount());
     }
 
@@ -51,7 +50,7 @@ class GatheringTest {
     void gatheringShouldProduceCrateWithProducts() {
         // given
         Integer initialWateringCount = 10;
-        Integer raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithWateringCountOf(initialWateringCount)));
+        RaisedBedId raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithWateringCountOf(initialWateringCount)));
         GatheringCommand command = gatherPlantsCommandWithBed(raisedBedId);
 
         // when
@@ -59,14 +58,13 @@ class GatheringTest {
 
         // then
         assertFalse(crateRepository.getCrates().isEmpty());
-        assertNotEquals(0, crateRepository.getCrates().get(0).getWeight());
-        assertNotNull(crateRepository.getCrates().get(0).getProducts());
+        assertTrue(crateRepository.getCrates().get(0).hasProducts());
     }
 
     @Test
     void gatheringBigAmountOfPlantsShouldProduceMultipleCrates() {
         // given
-        Integer raisedBedId = raisedBedRepositoryContains(someRaisedBedWithMultiplePlantsReadyForGathering());
+        RaisedBedId raisedBedId = raisedBedRepositoryContains(someRaisedBedWithMultiplePlantsReadyForGathering());
         GatheringCommand command = gatherPlantsCommandWithBed(raisedBedId);
 
         // when
@@ -76,7 +74,7 @@ class GatheringTest {
         assertTrue(crateRepository.getCrates().size() > 1);
     }
 
-    private Integer raisedBedRepositoryContains(RaisedBed raisedBed) {
+    private RaisedBedId raisedBedRepositoryContains(RaisedBed raisedBed) {
         raisedBedRepository.save(raisedBed);
         return raisedBed.getId();
     }

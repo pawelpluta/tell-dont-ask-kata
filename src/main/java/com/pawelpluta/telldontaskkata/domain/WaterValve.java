@@ -14,11 +14,12 @@ public class WaterValve {
         return id;
     }
 
-    public void setOpen(Boolean isOpen) {
-        this.open = isOpen;
+    public void open() {
+        open = true;
     }
 
-    public Boolean getOpen() {
-        return open;
+    public void close() {
+        open = false;
     }
+
 }

@@ -1,16 +1,18 @@
 package com.pawelpluta.telldontaskkata.application;
 
+import com.pawelpluta.telldontaskkata.domain.RaisedBedId;
+
 public class WateringCommand {
 
-    private Integer raisedBedId;
-    private Integer valveId;
+    private final RaisedBedId raisedBedId;
+    private final Integer valveId;
 
-    public WateringCommand(Integer raisedBedId, Integer valveId) {
+    public WateringCommand(RaisedBedId raisedBedId, Integer valveId) {
         this.raisedBedId = raisedBedId;
         this.valveId = valveId;
     }
 
-    public Integer getRaisedBedId() {
+    public RaisedBedId getRaisedBedId() {
         return raisedBedId;
     }
 

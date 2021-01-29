@@ -1,12 +1,14 @@
 package com.pawelpluta.telldontaskkata.domain;
 
-import java.util.List;
-
 import static com.pawelpluta.telldontaskkata.domain.ProductFixture.someProductOfType;
 
 public class CrateFixture {
 
+    public static Crate someCrate() {
+        return someCrateOfType(ProductType.FRUIT);
+    }
+
     public static Crate someCrateOfType(ProductType type) {
-        return new Crate(List.of(someProductOfType(type)));
+        return Crate.empty().pack(someProductOfType(type));
     }
 }

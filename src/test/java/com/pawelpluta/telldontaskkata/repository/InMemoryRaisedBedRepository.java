@@ -1,6 +1,7 @@
 package com.pawelpluta.telldontaskkata.repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import com.pawelpluta.telldontaskkata.domain.RaisedBed;
 
@@ -9,7 +10,7 @@ public class InMemoryRaisedBedRepository implements RaisedBedRepository {
     private RaisedBed savedRaisedBed;
 
     @Override
-    public Optional<RaisedBed> findById(Integer raisedBedId) {
+    public Optional<RaisedBed> findById(UUID raisedBedId) {
         return Optional.ofNullable(savedRaisedBed);
     }
 

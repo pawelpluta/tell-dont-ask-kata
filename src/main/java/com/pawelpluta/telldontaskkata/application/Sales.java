@@ -1,14 +1,14 @@
 package com.pawelpluta.telldontaskkata.application;
 
-import java.util.List;
-
-import com.pawelpluta.telldontaskkata.domain.Crate;
+import com.pawelpluta.telldontaskkata.domain.Crates;
 import com.pawelpluta.telldontaskkata.domain.Customer;
+import com.pawelpluta.telldontaskkata.domain.SaleResult;
 import com.pawelpluta.telldontaskkata.domain.Package;
-import com.pawelpluta.telldontaskkata.domain.Pallet;
 import com.pawelpluta.telldontaskkata.domain.ProductType;
 import com.pawelpluta.telldontaskkata.repository.CrateRepository;
 import com.pawelpluta.telldontaskkata.service.DeliveryService;
+
+import static com.pawelpluta.telldontaskkata.domain.Package.Result.ACCEPTED;
 
 public class Sales {
 
@@ -20,19 +20,17 @@ public class Sales {
         this.deliveryService = deliveryService;
     }
 
-    public boolean sell(Integer soldCrates, ProductType type, Customer customer) {
-        List<Crate> crates = crateRepository.findByTypeLimit(type, soldCrates);
-        if (crates.size() != soldCrates) {
-            return false;
+    public SaleResult sell(Integer soldCrates, ProductType type, Customer customer) {
+        Crates crates = Crates.of(crateRepository.findByTypeLimit(type, soldCrates));
+        if (!crates.hasAtLeastCountOf(soldCrates)) {
+            return SaleResult.productOutOfStock();
         }
-        Pallet packedCrates = new Pallet(crates);
-        if (customer.getWarehouseAddressVerified()) {
-            Package packageToDeliver = new Package(packedCrates, customer);
-            deliveryService.send(packageToDeliver);
-            crateRepository.delete(crates);
-            return true;
+        Package packageToDeliver = crates.packFor(customer);
+        if (packageToDeliver.send(deliveryService) == ACCEPTED) {
+            crateRepository.delete(packageToDeliver.deliveredCrates());
+            return SaleResult.sold();
         }
-        return false;
+        return SaleResult.receiverAddressUnknown();
     }
 
 }

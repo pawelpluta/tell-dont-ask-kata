@@ -6,4 +6,8 @@ public class ProductFixture {
         return new Product(10, productType);
     }
 
+    public static Product productWithWeightOf(Integer weight) {
+        return new Product(weight, ProductType.FRUIT);
+    }
+
 }

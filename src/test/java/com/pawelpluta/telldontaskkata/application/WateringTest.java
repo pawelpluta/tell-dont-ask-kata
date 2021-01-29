@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import com.pawelpluta.telldontaskkata.domain.Plant;
 import com.pawelpluta.telldontaskkata.domain.RaisedBed;
+import com.pawelpluta.telldontaskkata.domain.RaisedBedId;
 import com.pawelpluta.telldontaskkata.domain.WaterValve;
+import com.pawelpluta.telldontaskkata.domain.WateringResult;
+import com.pawelpluta.telldontaskkata.domain.WateringResult.SuccessfullyWatered;
 import com.pawelpluta.telldontaskkata.repository.InMemoryRaisedBedRepository;
 import com.pawelpluta.telldontaskkata.repository.InMemoryWaterValveRepository;
 import com.pawelpluta.telldontaskkata.repository.RaisedBedRepository;
@@ -19,7 +22,7 @@ import static com.pawelpluta.telldontaskkata.domain.RaisedBedFixture.someRaisedB
 import static com.pawelpluta.telldontaskkata.domain.RaisedBedFixture.someRaisedBedWith;
 import static com.pawelpluta.telldontaskkata.domain.WaterValveFixture.someWaterValve;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WateringTest {
@@ -43,45 +46,45 @@ class WateringTest {
         WateringCommand command = waterAnyRaisedBedCommandWithValve(waterValveId);
 
         // when
-        boolean wateringWasSuccessful = watering.perform(command);
+        WateringResult wateringResult = watering.perform(command);
 
         // then
-        assertFalse(wateringWasSuccessful);
+        assertNotEquals(SuccessfullyWatered.class, wateringResult.getClass());
     }
 
     @Test
     void shouldNotWaterAnythingIfThereIsWaterValve() {
         // given
-        Integer raisedBedId = raisedBedRepositoryContains(someRaisedBed());
+        RaisedBedId raisedBedId = raisedBedRepositoryContains(someRaisedBed());
         waterBedRepositoryIsEmpty();
         WateringCommand command = waterAnyRaisedBedCommandWithBed(raisedBedId);
 
         // when
-        boolean wateringWasSuccessful = watering.perform(command);
+        WateringResult wateringResult = watering.perform(command);
 
         // then
-        assertFalse(wateringWasSuccessful);
+        assertNotEquals(SuccessfullyWatered.class, wateringResult.getClass());
     }
 
     @Test
     void shouldSuccessfullyWaterPlants() {
         // given
-        Integer raisedBedId = raisedBedRepositoryContains(someRaisedBed());
+        RaisedBedId raisedBedId = raisedBedRepositoryContains(someRaisedBed());
         Integer waterValveId = waterBedRepositoryContains(someWaterValve());
         WateringCommand command = waterAnyRaisedBedCommandWith(raisedBedId, waterValveId);
 
         // when
-        boolean wateringWasSuccessful = watering.perform(command);
+        WateringResult wateringResult = watering.perform(command);
 
         // then
-        assertTrue(wateringWasSuccessful);
+        assertEquals(SuccessfullyWatered.class, wateringResult.getClass());
     }
 
     @Test
     void wateredPlantShouldHaveHigherSoilMoisture() {
         // given
         Integer initialMoisture = 0;
-        Integer raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithMoistureOf(initialMoisture)));
+        RaisedBedId raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithMoistureOf(initialMoisture)));
         Integer waterValveId = waterBedRepositoryContains(someWaterValve());
         WateringCommand command = waterAnyRaisedBedCommandWith(raisedBedId, waterValveId);
 
@@ -89,7 +92,7 @@ class WateringTest {
         watering.perform(command);
 
         // then
-        Plant plantInRaisedBed = raisedBedRepository.findById(raisedBedId).get().getPlants().get(0);
+        Plant plantInRaisedBed = raisedBedRepository.findById(raisedBedId.value()).get().getPlants().get(0);
         assertTrue(plantInRaisedBed.getSoilMoisturePercentage() > initialMoisture);
     }
 
@@ -97,7 +100,7 @@ class WateringTest {
     void shouldNotWaterPlantThatHaveEnoughWater() {
         // given
         Integer initialMoisture = 90;
-        Integer raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithMoistureOf(initialMoisture)));
+        RaisedBedId raisedBedId = raisedBedRepositoryContains(someRaisedBedWith(plantWithMoistureOf(initialMoisture)));
         Integer waterValveId = waterBedRepositoryContains(someWaterValve());
         WateringCommand command = waterAnyRaisedBedCommandWith(raisedBedId, waterValveId);
 
@@ -105,7 +108,7 @@ class WateringTest {
         watering.perform(command);
 
         // then
-        Plant plantInRaisedBed = raisedBedRepository.findById(raisedBedId).get().getPlants().get(0);
+        Plant plantInRaisedBed = raisedBedRepository.findById(raisedBedId.value()).get().getPlants().get(0);
         assertEquals(initialMoisture, plantInRaisedBed.getSoilMoisturePercentage());
     }
 
@@ -113,7 +116,7 @@ class WateringTest {
         raisedBedRepository.save(null);
     }
 
-    private Integer raisedBedRepositoryContains(RaisedBed raisedBed) {
+    private RaisedBedId raisedBedRepositoryContains(RaisedBed raisedBed) {
         raisedBedRepository.save(raisedBed);
         return raisedBed.getId();
     }

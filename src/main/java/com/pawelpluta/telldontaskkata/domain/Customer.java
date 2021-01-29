@@ -2,19 +2,19 @@ package com.pawelpluta.telldontaskkata.domain;
 
 public class Customer {
 
-    private Integer id;
+    private CustomerId id;
     private Boolean warehouseAddressVerified;
 
-    public Customer(Integer id, Boolean warehouseAddressVerified) {
+    public Customer(CustomerId id, Boolean warehouseAddressVerified) {
         this.id = id;
         this.warehouseAddressVerified = warehouseAddressVerified;
     }
 
-    public Integer getId() {
+    public CustomerId getId() {
         return id;
     }
 
-    public Boolean getWarehouseAddressVerified() {
+    public Boolean isWarehouseAddressVerified() {
         return warehouseAddressVerified;
     }
 }

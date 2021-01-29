@@ -1,18 +1,40 @@
 package com.pawelpluta.telldontaskkata.domain;
 
-import static com.pawelpluta.telldontaskkata.domain.PlantType.FLOWER;
-
 public class PlantFixture {
 
     public static Plant somePlant() {
-        return new Plant(FLOWER, 30, 0);
+        return new Flower(30, 0);
     }
 
     public static Plant plantWithMoistureOf(Integer soilMoisture) {
-        return new Plant(FLOWER, soilMoisture, 0);
+        return new Flower(soilMoisture, 0);
     }
 
     public static Plant plantWithWateringCountOf(Integer wateringCount) {
-        return new Plant(FLOWER, 50, wateringCount);
+        return new Flower(50, wateringCount);
+    }
+
+    public static Flower flowerWithSoilMoistureOf(Integer soilMoisture) {
+        return new Flower(soilMoisture, 0);
+    }
+
+    public static Flower flowerWithWateringCountOf(Integer wateringCount) {
+        return new Flower(50, wateringCount);
+    }
+
+    public static Tree treeWithSoilMoistureOf(Integer soilMoisture) {
+        return new Tree(soilMoisture, 0);
+    }
+
+    public static Tree treeWithWateringCountOf(Integer wateringCount) {
+        return new Tree(50, wateringCount);
+    }
+
+    public static Vegetable vegetableWithSoilMoistureOf(Integer soilMoisture) {
+        return new Vegetable(soilMoisture, 0);
+    }
+
+    public static Vegetable vegetableWithWateringCountOf(Integer wateringCount) {
+        return new Vegetable(50, wateringCount);
     }
 }

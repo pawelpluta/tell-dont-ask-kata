@@ -1,19 +1,19 @@
 package com.pawelpluta.telldontaskkata.application;
 
 import com.pawelpluta.telldontaskkata.domain.PlantType;
+import com.pawelpluta.telldontaskkata.domain.RaisedBedId;
 
 public class GatheringCommand {
 
-    private final Integer raisedBedId;
+    private final RaisedBedId raisedBedId;
+    private final PlantType plantType;
 
-    public GatheringCommand(Integer raisedBedId, PlantType plantType) {
+    public GatheringCommand(RaisedBedId raisedBedId, PlantType plantType) {
         this.raisedBedId = raisedBedId;
         this.plantType = plantType;
     }
 
-    private final PlantType plantType;
-
-    public Integer getRaisedBedId() {
+    public RaisedBedId getRaisedBedId() {
         return raisedBedId;
     }
 

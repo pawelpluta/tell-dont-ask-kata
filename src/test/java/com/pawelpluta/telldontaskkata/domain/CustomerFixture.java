@@ -5,10 +5,10 @@ import static com.pawelpluta.telldontaskkata.IdentifierFixture.randomId;
 public class CustomerFixture {
 
     public static Customer someCustomerWithWarehouse() {
-        return new Customer(randomId(), true);
+        return new Customer(CustomerId.random(), true);
     }
 
     public static Customer someCustomerWithoutWarehouse() {
-        return new Customer(randomId(), false);
+        return new Customer(CustomerId.random(), false);
     }
 }

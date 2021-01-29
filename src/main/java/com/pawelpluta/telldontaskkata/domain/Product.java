@@ -10,7 +10,7 @@ public class Product {
         this.type = type;
     }
 
-    public Integer getWeight() {
+    public Integer weight() {
         return weight;
     }
 

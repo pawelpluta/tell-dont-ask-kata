@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.pawelpluta.telldontaskkata.domain.Crate;
+import com.pawelpluta.telldontaskkata.domain.SaleResult;
 import com.pawelpluta.telldontaskkata.domain.ProductType;
 import com.pawelpluta.telldontaskkata.repository.CrateRepository;
 import com.pawelpluta.telldontaskkata.repository.InMemoryCrateRepository;
@@ -40,10 +41,10 @@ class SalesTest {
         cratesRepositoryContains(someCrateOfType(ProductType.FRUIT));
 
         // when
-        boolean soldSuccessfully = sales.sell(2, ProductType.FRUIT, someCustomerWithWarehouse());
+        SaleResult result = sales.sell(2, ProductType.FRUIT, someCustomerWithWarehouse());
 
         // then
-        assertFalse(soldSuccessfully);
+        assertFalse(result instanceof SaleResult.SoldSuccessfully);
     }
 
     @Test
@@ -52,10 +53,10 @@ class SalesTest {
         cratesRepositoryContains(someCrateOfType(ProductType.FRUIT));
 
         // when
-        boolean soldSuccessfully = sales.sell(1, ProductType.FRUIT, someCustomerWithoutWarehouse());
+        SaleResult result = sales.sell(1, ProductType.FRUIT, someCustomerWithoutWarehouse());
 
         // then
-        assertFalse(soldSuccessfully);
+        assertFalse(result instanceof SaleResult.SoldSuccessfully);
     }
 
     @Test
@@ -64,10 +65,10 @@ class SalesTest {
         cratesRepositoryContains(someCrateOfType(ProductType.FRUIT));
 
         // when
-        boolean soldSuccessfully = sales.sell(1, ProductType.FRUIT, someCustomerWithWarehouse());
+        SaleResult result = sales.sell(1, ProductType.FRUIT, someCustomerWithWarehouse());
 
         // then
-        assertTrue(soldSuccessfully);
+        assertTrue(result instanceof SaleResult.SoldSuccessfully);
     }
 
     @Test
