@@ -1,6 +1,8 @@
 # Tell, Don't Ask Code Kata
 
-Code Kata is an exercise, that allows you to train your skills by practice.
+Code Kata is an exercise, that allows you to train your skills by practice. 
+In this kata you are going to train your skills regarding giving the class more resposibility than just keeping the data.
+Read more about [Tell, Don't Ask in this article](https://pawelpluta.com/tell-dont-ask-learn-to-talk-to-your-objects/).
 
 ## This project
 
